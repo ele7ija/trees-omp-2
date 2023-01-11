@@ -1,0 +1,88 @@
+\begin{Verbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}math.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}stdint.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}stdio.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{c+cpf}{\PYGZlt{}unistd.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}omp.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}stdlib.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}string.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}stdbool.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include}\PYG{+w}{ }\PYG{c+cpf}{\PYGZlt{}sys/types.h\PYGZgt{}}
+
+\PYG{c+cp}{\PYGZsh{}define N 5}
+\PYG{c+cp}{\PYGZsh{}define MAX\PYGZus{}THREADS 1}
+
+\PYG{c+c1}{// Definition for a binary tree TreeNode.}
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{val}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{left}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{right}\PYG{p}{;}
+\PYG{p}{\PYGZcb{};}
+
+\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{newTreeNode}\PYG{p}{(}\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{val}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{node}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{malloc}\PYG{p}{(}\PYG{k}{sizeof}\PYG{p}{(}\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{p}{));}
+\PYG{+w}{    }\PYG{n}{node}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{val}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{val}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{node}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{left}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{node}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{right}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{NULL}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{node}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{traverse}\PYG{p}{(}\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{root}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{u\PYGZus{}int64\PYGZus{}t}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{sum}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{n}{usleep}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{root}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{false}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{p}{(}\PYG{o}{*}\PYG{n}{sum}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZhy{}=}\PYG{+w}{ }\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{val}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+c1}{// printf(\PYGZdq{}\PYGZpc{}d [\PYGZpc{}lu]\PYGZbs{}n\PYGZdq{}, root\PYGZhy{}\PYGZgt{}val, *sum);}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{right}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{left}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{o}{\PYGZam{}\PYGZam{}*}\PYG{n}{sum}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}found!}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{true}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{u\PYGZus{}int64\PYGZus{}t}\PYG{+w}{ }\PYG{n}{lsum}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{rsum}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{lsum}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{rsum}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{sum}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{traverse}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{lsum}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{n}{traverse}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{right}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{rsum}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{traverse\PYGZus{}parallel}\PYG{p}{(}\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{root}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{u\PYGZus{}int64\PYGZus{}t}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{sum}\PYG{p}{,}\PYG{+w}{ }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{level}\PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{root}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{p}{)}\PYG{+w}{ }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{false}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{p}{(}\PYG{o}{*}\PYG{n}{sum}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZhy{}=}\PYG{+w}{ }\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{val}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k}{if}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{right}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{o}{\PYGZam{}\PYGZam{}}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{left}\PYG{o}{==}\PYG{n+nb}{NULL}\PYG{o}{\PYGZam{}\PYGZam{}*}\PYG{n}{sum}\PYG{o}{==}\PYG{l+m+mi}{0}\PYG{p}{)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{k}{return}\PYG{+w}{ }\PYG{n+nb}{true}\PYG{p}{;}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{n}{u\PYGZus{}int64\PYGZus{}t}\PYG{+w}{ }\PYG{n}{lsum}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{rsum}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{lsum}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{rsum}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{o}{*}\PYG{n}{sum}\PYG{p}{;}
+\PYG{+w}{    }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{;}
+\PYG{+w}{    }\PYG{n}{left}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{right}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n+nb}{false}\PYG{p}{;}
+
+\PYG{+w}{    }\PYG{k+kt}{int}\PYG{+w}{ }\PYG{n}{max}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{omp\PYGZus{}get\PYGZus{}num\PYGZus{}threads}\PYG{p}{();}
+\PYG{+w}{    }\PYG{k}{if}\PYG{+w}{ }\PYG{p}{(}\PYG{n}{pow}\PYG{p}{(}\PYG{n}{level}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZlt{}=}\PYG{+w}{ }\PYG{n}{max}\PYG{p}{)}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{c+cp}{\PYGZsh{}pragma omp task shared(left)}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{left}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{traverse\PYGZus{}parallel}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{lsum}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{level}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{c+cp}{\PYGZsh{}pragma omp task shared(right)}
+\PYG{+w}{        }\PYG{p}{\PYGZob{}}
+\PYG{+w}{            }\PYG{n}{right}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{traverse\PYGZus{}parallel}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{right}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{rsum}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{level}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{        }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{        }\PYG{c+cp}{\PYGZsh{}pragma omp taskwait}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}\PYG{+w}{ }\PYG{k}{else}\PYG{+w}{ }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{n}{left}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{traverse\PYGZus{}parallel}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{left}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{lsum}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{level}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{        }\PYG{n}{right}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{traverse\PYGZus{}parallel}\PYG{p}{(}\PYG{n}{root}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{right}\PYG{p}{,}\PYG{+w}{ }\PYG{o}{\PYGZam{}}\PYG{n}{rsum}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{level}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{left}\PYG{+w}{ }\PYG{o}{||}\PYG{+w}{ }\PYG{n}{right}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{pathSum}\PYG{p}{(}\PYG{k}{struct}\PYG{+w}{ }\PYG{n+nc}{TreeNode}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{root}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{u\PYGZus{}int64\PYGZus{}t}\PYG{o}{*}\PYG{+w}{ }\PYG{n}{sum}\PYG{p}{)\PYGZob{}}
+\PYG{+w}{    }\PYG{k+kt}{bool}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{+w}{    }\PYG{c+cp}{\PYGZsh{}pragma omp parallel num\PYGZus{}threads(MAX\PYGZus{}THREADS) shared(res)}
+\PYG{+w}{    }\PYG{p}{\PYGZob{}}
+\PYG{+w}{        }\PYG{c+cp}{\PYGZsh{}pragma omp single}
+\PYG{+w}{        }\PYG{n}{res}\PYG{+w}{ }\PYG{o}{=}\PYG{+w}{ }\PYG{n}{traverse\PYGZus{}parallel}\PYG{p}{(}\PYG{n}{root}\PYG{p}{,}\PYG{+w}{ }\PYG{n}{sum}\PYG{p}{,}\PYG{+w}{ }\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{+w}{    }\PYG{p}{\PYGZcb{}}
+\PYG{+w}{    }\PYG{k}{return}\PYG{+w}{ }\PYG{n}{res}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
