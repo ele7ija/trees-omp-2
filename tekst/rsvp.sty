@@ -12,6 +12,7 @@
 % како ће бити приказани python, c, c++ изворни кодови
 \setminted[python]{frame=lines,framesep=3mm,linenos,mathescape}
 \setminted[c]{frame=lines,framesep=3mm,linenos,mathescape}
+\setminted[c]{fontsize=\footnotesize}
 \setminted[c++]{frame=lines,framesep=3mm,linenos,mathescape}
 
 % ====================================== minted СКРАЋЕНИЦЕ ====================================== %
@@ -93,7 +94,7 @@
 {\end{minted}\end{listing}}
 
 \newenvironment{ccode}[2]
-{\VerbatimEnvironment\begin{listing}\caption{#1}\label{#2}\begin{minted}{c}}
+{\VerbatimEnvironment\begin{listing}\caption{#1}\label{#2}\begin{minted}[fontsize=\scriptsize]{c}}
 {\end{minted}\end{listing}}
 
 \newenvironment{cppcode}[2]

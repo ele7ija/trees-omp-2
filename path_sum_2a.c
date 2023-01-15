@@ -9,7 +9,7 @@
 #include <sys/types.h>
 
 #define N 5
-#define MAX_THREADS 1
+#define MAX_THREADS 6
 
 // Definition for a binary tree TreeNode.
 struct TreeNode {
@@ -32,7 +32,6 @@ bool traverse(struct TreeNode* root, u_int64_t* sum)
     if(root==NULL) return false;
 
     (*sum) -= root->val;
-    // printf("%d [%lu]\n", root->val, *sum);
     if(root->right==NULL&&root->left==NULL&&*sum==0)
     {
         printf("found!\n");
@@ -43,7 +42,7 @@ bool traverse(struct TreeNode* root, u_int64_t* sum)
     return traverse(root->left, &lsum) || traverse(root->right, &rsum);
 }
 
-bool traverse_parallel(struct TreeNode* root, u_int64_t* sum, int level)
+bool traverse_parallel(struct TreeNode* root, u_int64_t* sum, int l, int curr_l)
 {
     usleep(1);
     if(root==NULL) return false;
@@ -58,23 +57,21 @@ bool traverse_parallel(struct TreeNode* root, u_int64_t* sum, int level)
     u_int64_t lsum, rsum;
     lsum = rsum = *sum;
     bool left, right;
-    left = right = false;
 
-    int max = omp_get_num_threads();
-    if (pow(level, 2) <= max) {
-        // printf("running in parallel level: %d, max: %d\n", level, max);
+    if (curr_l <= l) {
+        printf("running in parallel curr_l: %d\n", curr_l);
         #pragma omp task shared(left)
         {
-            left = traverse_parallel(root->left, &lsum, level+1);
+            left = traverse_parallel(root->left, &lsum, l, curr_l+1);
         }
         #pragma omp task shared(right)
         {
-            right = traverse_parallel(root->right, &rsum, level+1);
+            right = traverse_parallel(root->right, &rsum, l, curr_l+1);
         }
         #pragma omp taskwait
     } else {
-        left = traverse_parallel(root->left, &lsum, level+1);
-        right = traverse_parallel(root->right, &rsum, level+1);
+        left = traverse(root->left, &lsum);
+        right = traverse(root->right, &rsum);
     }
     // printf("Current value: %d, %d, %d\n", root->val, left, right);
     return left || right;
@@ -85,7 +82,10 @@ bool pathSum(struct TreeNode* root, u_int64_t* sum){
     #pragma omp parallel num_threads(MAX_THREADS) shared(res)
     {
         #pragma omp single
-        res = traverse_parallel(root, sum, 0);
+        {
+            int l = floor(log(omp_get_num_threads()) / log(2));
+            res = traverse_parallel(root, sum, l, 0);
+        }
     }
     return res;
 }
