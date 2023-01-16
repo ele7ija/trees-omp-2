@@ -36,7 +36,7 @@ bool pathSum(struct TreeNode* root, u_int64_t* sum){
     {
         #pragma omp single
         {
-            int l = floor(log(omp_get_num_threads()) / log(2));
+            int l = floor(log(omp_get_num_threads()) / log(2)) - 1;
             res = traverse_parallel(root, sum, l, 0);
         }
     }

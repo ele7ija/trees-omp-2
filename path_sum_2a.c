@@ -9,7 +9,7 @@
 #include <sys/types.h>
 
 #define N 5
-#define MAX_THREADS 6
+#define MAX_THREADS 12
 
 // Definition for a binary tree TreeNode.
 struct TreeNode {
@@ -34,7 +34,7 @@ bool traverse(struct TreeNode* root, u_int64_t* sum)
     (*sum) -= root->val;
     if(root->right==NULL&&root->left==NULL&&*sum==0)
     {
-        printf("found!\n");
+        // printf("found!\n");
         return true;
     }
     u_int64_t lsum, rsum;
@@ -78,6 +78,7 @@ bool traverse_parallel(struct TreeNode* root, u_int64_t* sum, int l, int curr_l)
 }
 
 bool pathSum(struct TreeNode* root, u_int64_t* sum){
+    // traverse(root, sum);
     bool res;
     #pragma omp parallel num_threads(MAX_THREADS) shared(res)
     {
@@ -106,9 +107,17 @@ void printMatrix(int** columnSizes, int* returnSize, int** matrix) {
 int dfs(struct TreeNode* root) {
     if (root==NULL) return 0;
     printf("%d\n", root->val);
-    dfs(root->left);
-    return root-> val + dfs(root->right);
-    
+    return root-> val + dfs(root->left);
+}
+
+int middfs(struct TreeNode* root, bool left) {
+    if (root==NULL) return 0;
+    printf("%d\n", root->val);
+    if (left) {
+        return root-> val + middfs(root->left, !left);
+    } else {
+        return root-> val + middfs(root->right, !left);
+    }
 }
 
 int parentIndex(int i) {
@@ -183,8 +192,18 @@ int main() {
     struct TreeNode** nodes = readTree();
     struct TreeNode* root = nodes[0];
     
+    // 27
+    // 3904.
+    // 37574.
+
+    // 26.
+    // 2638.
+    // 24941.
     u_int64_t* sum = malloc(sizeof(u_int64_t));
-    *sum = 27;
+    *sum = 25;
+
+    // printf("dfs: %d\n", dfs(root));
+    // printf("middfs: %d\n", middfs(root, false));
 
     double start = omp_get_wtime();
     bool exists = pathSum(root, sum);
